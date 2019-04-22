@@ -3,6 +3,8 @@
 
 
 /********************** GLOBALS ******************************/
+enum View_Type { FULL_SCREEN, VERTICAL_SPLIT, HORIZONTAL_SPLIT };
+View_Type view = FULL_SCREEN;
 
 double zTrans = -14.0f;
 float rotationX = 0.0f;
@@ -329,7 +331,7 @@ int main(int argc, char** argv)
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	// Create a window using a string and make it the current window.
-	GLuint world_Window = glutCreateWindow("Viewing Transformations");
+	GLuint world_Window = glutCreateWindow("Projection and Viewport Transformations");
 
 	// Indicate to GLUT that the flow of control should return to the program after
 	// the window is closed and the GLUTmain loop is exited.
