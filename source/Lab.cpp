@@ -108,24 +108,43 @@ static void RenderSceneCB()
 
 		case VERTICAL_SPLIT:
 
-			twoViewsSplitVertically();
+			//twoViewsSplitVertically();
 			break;
 
 		case HORIZONTAL_SPLIT:
-
-			// TODO
+            // TODO
 			//twoViewsSplitHorizontally();
 			break;
 	
 		default:
 			renderObjects();
-
+        }
 
 		// Display the color buffer
 		frameBuffer.showColorBuffer();
 	}
 
 } // end RenderSceneCB
+
+// myPerspective
+glm::dmat4 myPerspective(double fov, double aspect, double near, double far)
+{
+    glm::dmat4 mat;
+    
+    double radians = MM_PI / 180.0;
+
+    double yScale = 1.0 / glm::tan(radians * fov / 2);
+    double xScale = yScale / aspect;
+
+    mat[0][0] = xScale;
+    mat[1][1] = yScale;
+    mat[2][2] = (far + near) / (near - far);
+    mat[2][3] = -1.0;
+    mat[3][2] = (2.0 * far * near) / (near - far);
+
+    return mat;
+} // end myPerspective
+
 
 // Reset viewport limits for full window rendering each time the window is resized.
 // This function is called when the program starts up and each time the window is 
@@ -141,8 +160,8 @@ static void ResizeCB(int width, int height)
 	PerVertex::xViewportMax = (double)width;
 	PerVertex::yViewportMax = (double)height;
 
-	// Create a perspective projection matrix. glm::perspective vertical field of view is specifed in degrees.
-	PerVertex::projectionTransformation = glm::perspective( 45.0, ( (double)PerVertex::xViewportMax - PerVertex::xViewportMin ) /
+	// Create a perspective projection matrix. 
+	PerVertex::projectionTransformation = myPerspective( 45.0, ( (double)PerVertex::xViewportMax - PerVertex::xViewportMin ) /
 		( (double)PerVertex::yViewportMax - PerVertex::yViewportMin ), 1.0, 50.0 );
 		
 	// Set viewport transformation
@@ -159,12 +178,6 @@ static void ResizeCB(int width, int height)
 
 } // end ResizeCB
 
-// myPerspective
-glm::dmat4 myPerspective(double fov, double aspect, double near, double far)
-{
-
-}
-
 void viewPortMenu(int value)
 {
 	switch (value) {
@@ -172,7 +185,8 @@ void viewPortMenu(int value)
 	case(0):
 
 		// "Quit" selected on the menu
-		glutLeaveMainLoop();
+#warning uncomment
+		//glutLeaveMainLoop();
 		break;
 	case(1):
 
