@@ -103,7 +103,23 @@ static void RenderSceneCB()
 		// Determine the position of the viewpoint in world coordinates
 		PerVertex::eyePositionInWorldCoords = glm::inverse(PerVertex::viewingTransformation)[3].xyz;
 
-		renderObjects();
+		// Draw the objects in the scene
+		switch(view) {
+
+		case VERTICAL_SPLIT:
+
+			twoViewsSplitVertically();
+			break;
+
+		case HORIZONTAL_SPLIT:
+
+			// TODO
+			//twoViewsSplitHorizontally();
+			break;
+	
+		default:
+			renderObjects();
+
 
 		// Display the color buffer
 		frameBuffer.showColorBuffer();
@@ -142,6 +158,53 @@ static void ResizeCB(int width, int height)
 	glutPostRedisplay();
 
 } // end ResizeCB
+
+// myPerspective
+glm::dmat4 myPerspective(double fov, double aspect, double near, double far)
+{
+
+}
+
+void viewPortMenu(int value)
+{
+	switch (value) {
+
+	case(0):
+
+		// "Quit" selected on the menu
+		glutLeaveMainLoop();
+		break;
+	case(1):
+
+		view = FULL_SCREEN;
+
+		ResizeCB((int)PerVertex::xViewportMax,
+			(int)PerVertex::yViewportMax);
+
+		break;
+
+	case(2):
+
+		view = VERTICAL_SPLIT;
+		std::cout << "vertical" << std::endl;
+		break;
+
+	case(3):
+
+		view = HORIZONTAL_SPLIT;
+
+		std::cout << "horizontal" << std::endl;
+
+		break;
+
+	default:
+		std::cout << "Invalid view selection " << std::endl;
+	}
+
+	// Signal GLUT to call display callback
+	glutPostRedisplay();
+
+} // end viewPortMenu
 
 
 // Responds to 'f' and escape keys. 'f' key allows 
@@ -361,11 +424,21 @@ int main(int argc, char** argv)
 	glutAddMenuEntry( "View 5", 5 );
 	glutAddMenuEntry( "View 6", 6 );
 
+	// Create viewport submenu
+	int viewportMenuid = glutCreateMenu(viewPortMenu);
+	// Specify menu items and integer identifiers
+	glutAddMenuEntry("Full Screen", 1);
+	glutAddMenuEntry("Vertical Split", 2);
+	glutAddMenuEntry("Horizontal Split", 3);
+
+
 	// Create main submenu
 	int menu1id = glutCreateMenu( mainMenu );
 	glutAddSubMenu( "Render", polyMenuid );
 	glutAddSubMenu( "View", viewMenuid );
+	glutAddSubMenu("Viewport", viewportMenuid);
 	glutAddMenuEntry( "Quit", 0 );
+
 
 	// Attach menu to right mouse button
 	glutAttachMenu( GLUT_RIGHT_BUTTON );
