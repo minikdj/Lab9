@@ -94,6 +94,22 @@ glm::dmat4 myPerspective(double fov, double aspect, double near, double far)
     return mat;
 } // end myPerspective
 
+// myOrthographic
+glm::dmat4 myOrthographic(double left, double right, double bottom, double top, double near, double far)
+{
+    glm::dmat4 mat;
+
+    mat[0][0] = 2.0 / (right - left);
+    mat[3][0] = -(right + left) / (right - left);
+    mat[1][1] = 2.0 / (top - bottom);
+    mat[3][1] = -(top + bottom) / (top - bottom);
+    mat[2][2] = -2.0 / (far - near);
+    mat[3][2] = -(far + near) / (far - near);
+    mat[3][3] = 1;
+
+    return mat;
+}
+
 void twoViewsSplitVertically()
 {
     // Render left side view
@@ -113,7 +129,7 @@ void twoViewsSplitVertically()
 
 	renderObjects();
 
-    PerVertex::projectionTransformation = glm::ortho(-8.0, 8.0, -6.0, 6.0, 1.0, 100.0);
+    PerVertex::projectionTransformation = myOrthographic(-8.0, 8.0, -6.0, 6.0, 1.0, 100.0);
 
     // set viewport transformation for right view
 	PerVertex::viewportTransformation =
@@ -149,7 +165,7 @@ void twoViewsSplitHorizontally()
 
 	renderObjects();
 
-    PerVertex::projectionTransformation = glm::ortho(-23.0, 23.0, -4.0, 4.0, 1.0, 100.0);
+    PerVertex::projectionTransformation = myOrthographic(-23.0, 23.0, -4.0, 4.0, 1.0, 100.0);
 
     // set viewport transformation for top view
 	PerVertex::viewportTransformation =
