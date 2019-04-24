@@ -94,11 +94,9 @@ glm::dmat4 myPerspective(double fov, double aspect, double near, double far)
     return mat;
 } // end myPerspective
 
-
-// Draws two views of the scene. One on the right and one on the left.
 void twoViewsSplitVertically()
 {
-	// Render left side view
+    // Render left side view
     double viewportWidth = (PerVertex::xViewportMax-PerVertex::xViewportMin)/2.0;
 	double viewportHeight = (PerVertex::yViewportMax - PerVertex::yViewportMin);
 
@@ -126,7 +124,41 @@ void twoViewsSplitVertically()
 
     renderObjects();
 
-} // end twoViewsSplitVertically
+
+}
+
+// Draws two views of the scene. One on the top and one on the bottom.
+void twoViewsSplitHorizontally()
+{
+	// Render left side view
+    double viewportWidth = (PerVertex::xViewportMax-PerVertex::xViewportMin);
+	double viewportHeight = (PerVertex::yViewportMax - PerVertex::yViewportMin)/2.0;
+
+	PerVertex::projectionTransformation = myPerspective(55.0, 
+            ((double)viewportWidth) / ((double)viewportHeight), 0.1f, 100.0);
+
+	// Set viewport transformation for bottom view
+	PerVertex::viewportTransformation =
+		glm::translate(dvec3(0.0, 0.0, 0.0)) *
+        glm::scale(dvec3((double)(viewportWidth)/(PerVertex::xNdcMax-
+                        PerVertex::xNdcMin),
+                    (double)(viewportHeight)/(PerVertex::yNdcMax-PerVertex::yNdcMin),1.0)) *
+        glm::translate(dvec3(-PerVertex::xNdcMin, -PerVertex::yNdcMin, 0.0));
+
+	renderObjects();
+
+    // set viewport transformation for top view
+	PerVertex::viewportTransformation =
+		glm::translate(dvec3(0.0, 4.0, 0.0)) *
+        glm::scale(dvec3((double)(viewportWidth)/(PerVertex::xNdcMax-
+                        PerVertex::xNdcMin),
+                    (double)(viewportHeight)/(PerVertex::yNdcMax-PerVertex::yNdcMin),1.0)) *
+        glm::translate(dvec3(PerVertex::xNdcMax, 3.0, 0.0));
+
+
+    renderObjects();
+
+} // end twoViewsSplitHorizontally
 
 
 /**
@@ -163,8 +195,7 @@ static void RenderSceneCB()
 			break;
 
 		case HORIZONTAL_SPLIT:
-            // TODO
-			//twoViewsSplitHorizontally();
+			twoViewsSplitHorizontally();
 			break;
 	
 		default:
