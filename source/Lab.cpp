@@ -113,6 +113,8 @@ void twoViewsSplitVertically()
 
 	renderObjects();
 
+    PerVertex::projectionTransformation = glm::ortho(-8.0, 8.0, -6.0, 6.0, 1.0, 100.0);
+
     // set viewport transformation for right view
 	PerVertex::viewportTransformation =
 		glm::translate(dvec3(4.0, 0.0, 0.0)) *
@@ -146,6 +148,8 @@ void twoViewsSplitHorizontally()
         glm::translate(dvec3(-PerVertex::xNdcMin, -PerVertex::yNdcMin, 0.0));
 
 	renderObjects();
+
+    PerVertex::projectionTransformation = glm::ortho(-23.0, 23.0, -4.0, 4.0, 1.0, 100.0);
 
     // set viewport transformation for top view
 	PerVertex::viewportTransformation =
