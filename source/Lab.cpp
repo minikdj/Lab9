@@ -102,7 +102,7 @@ void twoViewsSplitVertically()
     double viewportWidth = (PerVertex::xViewportMax-PerVertex::xViewportMin)/2.0;
 	double viewportHeight = (PerVertex::yViewportMax - PerVertex::yViewportMin);
 
-	PerVertex::projectionTransformation = myPerspective(45.0, 
+	PerVertex::projectionTransformation = myPerspective(55.0, 
             ((double)viewportWidth) / ((double)viewportHeight), 0.1f, 100.0);
 
 	// Set viewport transformation for left view
@@ -117,11 +117,11 @@ void twoViewsSplitVertically()
 
     // set viewport transformation for right view
 	PerVertex::viewportTransformation =
-		glm::translate(dvec3(0.0, 0.0, 0.0)) *
+		glm::translate(dvec3(4.0, 0.0, 0.0)) *
         glm::scale(dvec3((double)(viewportWidth)/(PerVertex::xNdcMax-
                         PerVertex::xNdcMin),
                     (double)(viewportHeight)/(PerVertex::yNdcMax-PerVertex::yNdcMin),1.0)) *
-        glm::translate(dvec3(PerVertex::xNdcMax, PerVertex::yNdcMax, 0.0));
+        glm::translate(dvec3(3, PerVertex::yNdcMax, 0.0));
 
 
     renderObjects();
@@ -503,7 +503,7 @@ int main(int argc, char** argv)
 	// ************* Object vertex coordinate initialization ***********************
 
 	// Set the initial viewing tranformation for the scene
-	PerVertex::viewingTransformation = glm::translate(dvec3(0.0, 0.0, -12.0));
+	PerVertex::viewingTransformation = glm::translate(dvec3(0.0, 0.0, -14.0));
 
 	// Enter the GLUT main loop. Control will not return until the window is closed.
 	glutMainLoop();
