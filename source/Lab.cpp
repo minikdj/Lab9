@@ -77,6 +77,57 @@ void renderObjects()
 
 } // end renderObjects
 
+// myPerspective
+glm::dmat4 myPerspective(double fov, double aspect, double near, double far)
+{
+    glm::dmat4 mat;
+    
+    double yScale = 1.0 / glm::tan((MM_PI / 180.0) * fov / 2);
+    double xScale = yScale / aspect;
+
+    mat[0][0] = xScale;
+    mat[1][1] = yScale;
+    mat[2][2] = (far + near) / (near - far);
+    mat[2][3] = -1.0;
+    mat[3][2] = (2.0 * far * near) / (near - far);
+
+    return mat;
+} // end myPerspective
+
+
+// Draws two views of the scene. One on the right and one on the left.
+void twoViewsSplitVertically()
+{
+	// Render left side view
+    double viewportWidth = (PerVertex::xViewportMax-PerVertex::xViewportMin)/2.0;
+	double viewportHeight = (PerVertex::yViewportMax - PerVertex::yViewportMin);
+
+	PerVertex::projectionTransformation = myPerspective(45.0, 
+            ((double)viewportWidth) / ((double)viewportHeight), 0.1f, 100.0);
+
+	// Set viewport transformation for left view
+	PerVertex::viewportTransformation =
+		glm::translate(dvec3(0.0, 0.0, 0.0)) *
+        glm::scale(dvec3((double)(viewportWidth)/(PerVertex::xNdcMax-
+                        PerVertex::xNdcMin),
+                    (double)(viewportHeight)/(PerVertex::yNdcMax-PerVertex::yNdcMin),1.0)) *
+        glm::translate(dvec3(-PerVertex::xNdcMin, -PerVertex::yNdcMin, 0.0));
+
+	renderObjects();
+
+    // set viewport transformation for right view
+	PerVertex::viewportTransformation =
+		glm::translate(dvec3(0.0, 0.0, 0.0)) *
+        glm::scale(dvec3((double)(viewportWidth)/(PerVertex::xNdcMax-
+                        PerVertex::xNdcMin),
+                    (double)(viewportHeight)/(PerVertex::yNdcMax-PerVertex::yNdcMin),1.0)) *
+        glm::translate(dvec3(PerVertex::xNdcMax, PerVertex::yNdcMax, 0.0));
+
+
+    renderObjects();
+
+} // end twoViewsSplitVertically
+
 
 /**
 * Acts as the display function for the window.
@@ -108,7 +159,7 @@ static void RenderSceneCB()
 
 		case VERTICAL_SPLIT:
 
-			//twoViewsSplitVertically();
+			twoViewsSplitVertically();
 			break;
 
 		case HORIZONTAL_SPLIT:
@@ -125,25 +176,6 @@ static void RenderSceneCB()
 	}
 
 } // end RenderSceneCB
-
-// myPerspective
-glm::dmat4 myPerspective(double fov, double aspect, double near, double far)
-{
-    glm::dmat4 mat;
-    
-    double radians = MM_PI / 180.0;
-
-    double yScale = 1.0 / glm::tan(radians * fov / 2);
-    double xScale = yScale / aspect;
-
-    mat[0][0] = xScale;
-    mat[1][1] = yScale;
-    mat[2][2] = (far + near) / (near - far);
-    mat[2][3] = -1.0;
-    mat[3][2] = (2.0 * far * near) / (near - far);
-
-    return mat;
-} // end myPerspective
 
 
 // Reset viewport limits for full window rendering each time the window is resized.
